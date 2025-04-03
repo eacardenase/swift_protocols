@@ -118,3 +118,56 @@ mikey is TabularDataSource // mikey does not conform to TabularDataSource protoc
 department is TabularDataSource // department conforms to TabularDataSource
 
 
+struct Book {
+    let title: String
+    let authors: String
+    let averageReview: Double
+}
+
+struct BookCollection: TabularDataSource, CustomStringConvertible {
+    let name: String
+    var collection = [Book]()
+    
+    var description: String {
+        "Collection \(name)"
+    }
+    
+    mutating func add(_ book: Book) {
+        collection.append(book)
+    }
+    
+    var numberOfRows: Int {
+        collection.count
+    }
+    
+    var numberOfColumns: Int {
+        3
+    }
+    
+    func label(forColumn column: Int) -> String {
+        switch column {
+        case 0: return "Book Title"
+        case 1: return "Authors"
+        case 2: return "Review Avg."
+        default: fatalError("Invalid column!")
+        }
+    }
+    
+    func itemFor(row: Int, column: Int) -> String {
+        let book = collection[row]
+        
+        switch column {
+        case 0: return book.title
+        case 1: return book.authors
+        case 2: return String(book.averageReview)
+        default: fatalError("Invalid column!")
+        }
+    }
+}
+
+var myFavorites = BookCollection(name: "My Favorites")
+
+myFavorites.add(Book(title: "Project Hail Mary", authors: "Andy Weir", averageReview: 5))
+myFavorites.add(Book(title: "So Good They Can't Ignore You", authors: "Cal Newport", averageReview: 5))
+
+printTable(myFavorites)
