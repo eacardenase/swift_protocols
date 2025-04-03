@@ -33,7 +33,11 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
         
         for columnIndex in 0..<dataSource.numberOfColumns {
             let item = dataSource.itemFor(row: rowIndex, column: columnIndex)
-            let paddingNedded = columnWidths[columnIndex] - item.count
+            var paddingNedded = columnWidths[columnIndex] - item.count
+            
+            if paddingNedded < 0 {
+                paddingNedded += abs(paddingNedded)
+            }
             
             let padding = repeatElement(" ", count: paddingNedded)
                 .joined(separator: "")
@@ -98,7 +102,7 @@ var department = Department(name: "Engineering")
 
 department.add(Person(name: "Eva", age: 30, yearsOfExperience: 6))
 department.add(Person(name: "Saleh", age: 40, yearsOfExperience: 18))
-department.add(Person(name: "Amit", age: 50, yearsOfExperience: 20))
+department.add(Person(name: "Amit", age: 5000, yearsOfExperience: 20))
 department.add(Person(name: "Edwin", age: 29, yearsOfExperience: 3))
 
 printTable(department)
