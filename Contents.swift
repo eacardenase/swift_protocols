@@ -22,8 +22,6 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
         headerContent.append(label)
     }
     
-    tableContent.append(headerContent)
-    
     for rowIndex in 0..<dataSource.numberOfRows {
         var rowContent = [String]()
         
@@ -31,7 +29,7 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
             let item = dataSource.itemFor(row: rowIndex, column: columnIndex)
             
             if item.count > columnWidths[columnIndex] {
-                columnWidths[columnIndex] += item.count
+                columnWidths[columnIndex] = item.count
             }
             
             rowContent.append(item)
@@ -39,6 +37,18 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
         
         tableContent.append(rowContent)
     }
+    
+    var headerContentFormatted = headerContent.enumerated().map {
+        let count = $1.count - columnWidths[$0]
+        let padding = repeatElement(" ", count: abs(count)).joined()
+        
+        return $1 + padding
+    }.joined(separator: " | ")
+    
+    headerContentFormatted = "| \(headerContentFormatted) |"
+    
+    var sectionSeparator = repeatElement("-", count: headerContentFormatted.count - 2).joined()
+    sectionSeparator = "+\(sectionSeparator)+"
     
     let tableContentFormatted = tableContent.map { row in
         let mainContent = row.enumerated().map {
@@ -49,9 +59,13 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
         }.joined(separator: " | ")
         
         return "| " + mainContent + " |"
-    }
+    }.joined(separator: "\n")
     
-    print(tableContentFormatted.joined(separator: "\n"))
+    print(sectionSeparator)
+    print(headerContentFormatted)
+    print(sectionSeparator)
+    print(tableContentFormatted)
+    print(sectionSeparator)
 }
 
 struct Person {
@@ -168,10 +182,10 @@ struct BookCollection: TabularDataSource, CustomStringConvertible {
     }
 }
 
-//var myFavorites = BookCollection(name: "My Favorites")
-//
-//myFavorites.add(Book(title: "Project Hail Mary", authors: "Andy Weir", averageReview: 5))
-//myFavorites.add(Book(title: "So Good They Can't Ignore You", authors: "Cal Newport", averageReview: 5))
-//myFavorites.add(Book(title: "Mistborn: The Final Empire", authors: "Brandon Sanderson", averageReview: 5))
-//
-//printTable(myFavorites)
+var myFavorites = BookCollection(name: "My Favorites")
+
+myFavorites.add(Book(title: "Project Hail Mary", authors: "Andy Weir", averageReview: 5))
+myFavorites.add(Book(title: "So Good They Can't Ignore You", authors: "Cal Newport", averageReview: 5))
+myFavorites.add(Book(title: "Mistborn: The Final Empire", authors: "Brandon Sanderson", averageReview: 5))
+
+printTable(myFavorites)
