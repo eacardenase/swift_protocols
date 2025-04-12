@@ -29,13 +29,9 @@ func printTable(_ dataSource: TabularDataSource & CustomStringConvertible) {
         
         for columnIndex in 0..<dataSource.numberOfColumns {
             let item = dataSource.itemFor(row: rowIndex, column: columnIndex)
-            var paddingNedded = columnWidths[columnIndex] - item.count
             
-            if paddingNedded < 0 {
-                let paddingDifference = abs(paddingNedded)
-                
-                paddingNedded += abs(paddingNedded)
-                columnWidths[columnIndex] += paddingDifference
+            if item.count > columnWidths[columnIndex] {
+                columnWidths[columnIndex] += item.count
             }
             
             rowContent.append(item)
@@ -172,10 +168,10 @@ struct BookCollection: TabularDataSource, CustomStringConvertible {
     }
 }
 
-var myFavorites = BookCollection(name: "My Favorites")
-
-myFavorites.add(Book(title: "Project Hail Mary", authors: "Andy Weir", averageReview: 5))
-myFavorites.add(Book(title: "So Good They Can't Ignore You", authors: "Cal Newport", averageReview: 5))
-myFavorites.add(Book(title: "Mistborn: The Final Empire", authors: "Brandon Sanderson", averageReview: 5))
-
-printTable(myFavorites)
+//var myFavorites = BookCollection(name: "My Favorites")
+//
+//myFavorites.add(Book(title: "Project Hail Mary", authors: "Andy Weir", averageReview: 5))
+//myFavorites.add(Book(title: "So Good They Can't Ignore You", authors: "Cal Newport", averageReview: 5))
+//myFavorites.add(Book(title: "Mistborn: The Final Empire", authors: "Brandon Sanderson", averageReview: 5))
+//
+//printTable(myFavorites)
